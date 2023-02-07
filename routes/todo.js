@@ -91,7 +91,7 @@ router.get("/", (req, res) => {
 
 router.post("/", (req, res) => {
   if (req.body.status < 1 || req.body.status > 3) {
-    res.status(500).send("You can only enter values between 1 and 3");
+    return res.status(500).send("You can only enter values between 1 and 3");
   }
   const query = `INSERT INTO todo (content,status) 
                      VALUES ($1,$2)`;
@@ -189,13 +189,13 @@ router.delete("/:id", (req, res) => {
 
 router.put("/:id", (req, res) => {
   if (req.body.status < 1 || req.body.status > 3) {
-    res.status(500).send("You can only enter values between 1 and 3");
+    return res.status(500).send("You can only enter values between 1 and 3");
   }
 
   const query = `UPDATE todo 
                      SET content = $1, status = $2 
                      WHERE id = $3`;
-                     
+
   const values = [req.body.content, req.body.status, req.params.id];
 
   try {
