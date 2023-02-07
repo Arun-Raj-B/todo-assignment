@@ -26,8 +26,7 @@ const specs = swaggerJsDoc(options);
 const app = express();
 app.use(cors());
 app.use(express.json());
-app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs));
-
+app.use("/api-docs", swaggerUI.serve, swaggerUI.setup(specs))
 app.use("/api/Todo", todoRoutes);
 
 const PORT = process.env.PORT || 5000;

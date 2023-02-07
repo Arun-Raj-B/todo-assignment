@@ -17,8 +17,11 @@ const client = require("../config/db");
  *         content:
  *           type: string
  *           description: The todo content
+ *         status:
+ *           type: int
+ *           description: status of the todo
  *       example:
- *         id: 1
+ *
  *         content: The is my first todo
  */
 
@@ -48,6 +51,7 @@ const client = require("../config/db");
 
 router.get("/", (req, res) => {
   let query = "SELECT * FROM todo";
+
   try {
     client.query(query, (err, result) => {
       if (err) {
@@ -86,9 +90,13 @@ router.get("/", (req, res) => {
  */
 
 router.post("/", (req, res) => {
-  const query = `INSERT INTO todo (content) 
-                     VALUES ($1)`;
-  const values = [req.body.content];
+  if (req.body.status < 1 || req.body.status > 3) {
+    res.status(500).send("You can only enter values between 1 and 3");
+  }
+  const query = `INSERT INTO todo (content,status) 
+                     VALUES ($1,$2)`;
+
+  const values = [req.body.content, req.body.status];
 
   try {
     client.query(query, values, (err, result) => {
@@ -180,10 +188,15 @@ router.delete("/:id", (req, res) => {
  */
 
 router.put("/:id", (req, res) => {
+  if (req.body.status < 1 || req.body.status > 3) {
+    res.status(500).send("You can only enter values between 1 and 3");
+  }
+
   const query = `UPDATE todo 
-                     SET content = $1 
-                     WHERE id = $2`;
-  const values = [req.body.content, req.params.id];
+                     SET content = $1, status = $2 
+                     WHERE id = $3`;
+                     
+  const values = [req.body.content, req.body.status, req.params.id];
 
   try {
     client.query(query, values, (err, result) => {
